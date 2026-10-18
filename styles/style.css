@@ -1,0 +1,20 @@
+/* Removendo setas padrões de inputs numéricos */
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+/* Transições suaves */
+input, button {
+  transition: all 0.15s ease-in-out;
+}
+
+/* Efeito de brilho na caixa de resultado final */
+#resumoValorFinal {
+  text-shadow: 0 0 20px rgba(52, 211, 153, 0.15);
+}

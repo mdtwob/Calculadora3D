@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculadora Profissional de Impressão 3D</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- CSS Personalizado -->
+  <link rel="stylesheet" href="styles/style.css" />
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen pb-12 font-sans antialiased">
+
+  <!-- Header -->
+  <header class="bg-slate-800 border-b border-slate-700 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+      <div class="flex items-center gap-3">
+        <div class="p-2 bg-blue-600 rounded-lg shadow-lg shadow-blue-500/20">
+          <i data-lucide="box" class="w-6 h-6 text-white"></i>
+        </div>
+        <div>
+          <h1 class="text-xl font-bold text-white tracking-tight">Tipo3Ds calculadora de orçamentos</h1>
+          <p class="text-xs text-slate-400">Calculadora Precisa de Orçamentos com Impostos B2B</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="salvarConfiguracoesPadrao()" class="flex items-center gap-2 px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-xs font-medium rounded-lg text-slate-200 transition">
+          <i data-lucide="save" class="w-4 h-4"></i>
+          Salvar Padrões
+        </button>
+        <button onclick="limparCampos()" class="flex items-center gap-2 px-3 py-1.5 bg-rose-950/40 border border-rose-800/50 hover:bg-rose-900/50 text-xs font-medium rounded-lg text-rose-300 transition">
+          <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+          Limpar
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Conteúdo Principal -->
+  <main class="max-w-7xl mx-auto px-4 mt-6">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+      <!-- COLUNA ESQUERDA: Formulários (8 cols) -->
+      <div class="lg:col-span-7 xl:col-span-8 space-y-6">
+
+        <!-- Informações do Projeto -->
+        <div class="bg-slate-800/80 border border-slate-700 rounded-xl p-5 shadow-sm">
+          <h2 class="text-base font-semibold text-white flex items-center gap-2 mb-4">
+            <i data-lucide="file-text" class="w-4 h-4 text-blue-400"></i>
+            Identificação da Peça / Cliente
+          </h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-slate-300 mb-1">Nome do Projeto / Peça</label>
+              <input type="text" id="nomeProjeto" placeholder="Ex: Engrenagem Industrial PEI" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-blue-500">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-300 mb-1">Nome do Cliente / Empresa</label>
+              <input type="text" id="nomeCliente" placeholder="Ex: Tech Solutions Ltda" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-blue-500">
+            </div>
+          </div>
+        </div>
+
+        <!-- Filamentos Utilizados -->
+        <div class="bg-slate-800/80 border border-slate-700 rounded-xl p-5 shadow-sm">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-base font-semibold text-white flex items-center gap-2">
+              <i data-lucide="disc" class="w-4 h-4 text-emerald-400"></i>
+              Filamentos & Materiais Diretos
+            </h2>
+            <button onclick="adicionarFilamento()" class="flex items-center gap-1 text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-3 py-1.5 rounded-lg transition">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add Filamento
+            </button>
+          </div>
+          
+          <div id="listaFilamentos" class="space-y-4">
+            <!-- Renderizado via JS -->
+          </div>
+        </div>
+
+        <!-- Impressora & Energia -->
+        <div class="bg-slate-800/80 border border-slate-700 rounded-xl p-5 shadow-sm">
+          <h2 class="text-base font-semibold text-white flex items-center gap-2 mb-4">
+            <i data-lucide="zap" class="w-4 h-4 text-amber-400"></i>
+            Tempo de Impressão, Energia & Desgaste
+          </h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-slate-300 mb-1">Tempo Impressão (Horas)</label>
+              <input type="number" id="horasImpressao" value="5" step="0.5" oninput="calcular()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-blue-500">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-300 mb-1">Potência Impressora (Watts)</label>
+              <input type="number" id="potenciaWatts" value="150" step="10" oninput="calcular()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-blue-500">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-300 mb-1">Custo Energia (R$/kWh)</label>
+              <input type="number" id="custoKwh" value="0.95" step="0.01" oninput="calcular()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-blue-500">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-300 mb-1">Depreciação/Manutenção (R$/h)</label>
+              <input type="number" id="taxaDepreciacao" value="1.50" step="0.10" oninput="calcular()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-blue-500">
+            </div>
+          </div>
+        </div>
+
+        <!-- Mão de Obra & Preparação -->
+        <div class="bg-slate-800/80 border border-slate-700 rounded-xl p-5 shadow-sm">
+          <h2 class="text-base font-semibold text-white flex items-center gap-2 mb-4">
+            <i data-lucide="clock" class="w-4 h-4 text-purple-400"></i>
+            Mão de Obra Humana (Sua Hora)
+          </h2>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-slate-300 mb-1">Valor da sua Hora (R$)</label>
+              <input type="number" id="valorHoraMaoObra" value="30.00" step="5" oninput="calcular()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-blue-500">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-300 mb-1">Fatiamento / Prep (Minutos)</label>
+              <input type="number" id="tempoPreparacaoMin" value="20" step="5" oninput="calcular()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-blue-500">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-300 mb-1">Acabamento / Pintura (Minutos)</label>
+              <input type="number" id="tempoAcabamentoMin" value="15" step="5" oninput="calcular()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-blue-500">
+            </div>
+          </div>
+        </div>
+
+        <!-- Insumos Adicionais & Custos Extras -->
+        <div class="bg-slate-800/80 border border-slate-700 rounded-xl p-5 shadow-sm">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-base font-semibold text-white flex items-center gap-2">
+              <i data-lucide="package" class="w-4 h-4 text-amber-500"></i>
+              Outros Insumos & Custos Extras
+            </h2>
+            <button onclick="adicionarInsumo()" class="flex items-center gap-1 text-xs bg-slate-700 hover:bg-slate-600 text-white font-medium px-3 py-1.5 rounded-lg transition">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add Insumo
+            </button>
+          </div>
+          
+          <div id="listaInsumos" class="space-y-3">
+            <!-- Renderizado via JS -->
+          </div>
+        </div>
+
+        <!-- Precificação, Lucro e Impostos -->
+        <div class="bg-slate-800/80 border border-slate-700 rounded-xl p-5 shadow-sm border-blue-900/40">
+          <h2 class="text-base font-semibold text-white flex items-center gap-2 mb-4">
+            <i data-lucide="percent" class="w-4 h-4 text-cyan-400"></i>
+            Precificação, Margem & Impostos
+          </h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-slate-300 mb-1">Margem de Risco/Falha (%)</label>
+              <input type="number" id="margemRisco" value="10" step="1" oninput="calcular()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-blue-500">
+              <span class="text-[10px] text-slate-400">Prevê peças perdidas</span>
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-300 mb-1">Margem Lucro Desejada (%)</label>
+              <input type="number" id="margemLucro" value="100" step="5" oninput="calcular()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-blue-500">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-300 mb-1">Taxas Cartão / Plataforma (%)</label>
+              <input type="number" id="taxaVenda" value="0" step="0.5" oninput="calcular()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-blue-500">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-300 mb-1 text-emerald-400 font-semibold">Imposto Nota Fiscal (%)</label>
+              <input type="number" id="impostoNF" value="6" step="0.5" oninput="calcular()" class="w-full bg-slate-900 border border-emerald-600/50 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-emerald-400">
+              <span class="text-[10px] text-slate-400">Cálculo "por dentro"</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- COLUNA DIREITA: Resumo / Card Fixo (4 cols) -->
+      <div class="lg:col-span-5 xl:col-span-4">
+        <div class="sticky top-20 space-y-4">
+          
+          <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-xl relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full blur-2xl pointer-events-none"></div>
+
+            <h3 class="text-lg font-bold text-white border-b border-slate-700 pb-3 flex justify-between items-center">
+              <span>Resumo do Orçamento</span>
+              <span class="text-xs bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2 py-0.5 rounded">Detalhamento</span>
+            </h3>
+
+            <!-- Lista de custos -->
+            <div class="mt-4 space-y-2.5 text-xs text-slate-300">
+              <div class="flex justify-between">
+                <span>Custo de Filamento:</span>
+                <span id="resumoFilamento" class="font-semibold text-slate-100">R$ 0,00</span>
+              </div>
+              <div class="flex justify-between">
+                <span>Energia Elétrica:</span>
+                <span id="resumoEnergia" class="font-semibold text-slate-100">R$ 0,00</span>
+              </div>
+              <div class="flex justify-between">
+                <span>Depreciação Máquina:</span>
+                <span id="resumoDepreciacao" class="font-semibold text-slate-100">R$ 0,00</span>
+              </div>
+              <div class="flex justify-between">
+                <span>Mão de Obra (Horas):</span>
+                <span id="resumoMaoObra" class="font-semibold text-slate-100">R$ 0,00</span>
+              </div>
+              <div class="flex justify-between">
+                <span>Insumos Extra / Peças:</span>
+                <span id="resumoInsumos" class="font-semibold text-slate-100">R$ 0,00</span>
+              </div>
+              <div class="flex justify-between text-amber-400">
+                <span>Reserva p/ Risco/Falhas:</span>
+                <span id="resumoRisco" class="font-semibold">R$ 0,00</span>
+              </div>
+
+              <div class="pt-2 border-t border-slate-700 flex justify-between font-bold text-sm text-slate-200">
+                <span>CUSTO TOTAL DIRETO:</span>
+                <span id="resumoCustoTotal" class="text-rose-400">R$ 0,00</span>
+              </div>
+
+              <div class="pt-2 space-y-2">
+                <div class="flex justify-between text-emerald-400">
+                  <span>Lucro Líquido Real:</span>
+                  <span id="resumoLucroLiquido" class="font-semibold">R$ 0,00</span>
+                </div>
+                <div class="flex justify-between text-slate-400">
+                  <span>Taxas Cartão/Plataforma:</span>
+                  <span id="resumoTaxaVenda">R$ 0,00</span>
+                </div>
+                <div class="flex justify-between text-cyan-400">
+                  <span>Imposto de Nota Fiscal:</span>
+                  <span id="resumoImpostoNF" class="font-semibold">R$ 0,00</span>
+                </div>
+              </div>
+
+              <!-- Valor Final Grande -->
+              <div class="mt-6 pt-4 border-t border-slate-700 bg-slate-900/80 p-4 rounded-xl text-center border border-emerald-500/30">
+                <span class="text-xs text-slate-400 uppercase tracking-wider font-semibold block mb-1">Preço Final Sugerido ao Cliente</span>
+                <span id="resumoValorFinal" class="text-3xl font-extrabold text-emerald-400">R$ 0,00</span>
+                <span class="text-[10px] text-slate-400 block mt-1">Com impostos e margem aplicados</span>
+              </div>
+            </div>
+
+            <!-- Botão Copiar -->
+            <button onclick="copiarOrcamentoCliente()" class="w-full mt-5 bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-3 px-4 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20 transition">
+              <i data-lucide="copy" class="w-4 h-4"></i>
+              Copiar Resumo para Cliente
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- JavaScript Personalizado -->
+  <script src="scripts/script.js"></script>
+</body>
+</html>
